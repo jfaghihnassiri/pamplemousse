@@ -1,22 +1,24 @@
 from socket import *
 import thread
- 
+
 BUFF = 1024
 HOST = '127.0.0.1'# must be input parameter @TODO
-PORT = 25000 # must be input parameter @TODO
+PORT = 9999 # must be input parameter @TODO
+def response(key):
+    return 'Server response: ' + key
 
-def gen_response():
-    return 'this_is_the_return_from_the_server'
- 
 def handler(clientsock,addr):
     while 1:
         data = clientsock.recv(BUFF)
-        print 'data:' + repr(data)
         if not data: break
-        clientsock.send(gen_response())
-        print 'sent:' + repr(gen_response())
-        clientsock.close()
- 
+        print repr(addr) + ' recv:' + repr(data)
+        clientsock.send(response(data))
+        print repr(addr) + ' sent:' + repr(response(data))
+        if "close" == data.rstrip(): break # type 'close' on client console to close connection from the server side
+    
+    clientsock.close()
+    print addr, "- closed connection" #log on console
+
 if __name__=='__main__':
     ADDR = (HOST, PORT)
     serversock = socket(AF_INET, SOCK_STREAM)
@@ -24,7 +26,7 @@ if __name__=='__main__':
     serversock.bind(ADDR)
     serversock.listen(5)
     while 1:
-        print 'waiting for connection...'
+        print 'waiting for connection... listening on port', PORT
         clientsock, addr = serversock.accept()
         print '...connected from:', addr
         thread.start_new_thread(handler, (clientsock, addr))
