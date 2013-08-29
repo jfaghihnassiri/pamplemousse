@@ -18,11 +18,11 @@ An experiment in socket communication, multi-platform development, and real-time
 
 **Communication Protocol**
 - *Header*
-- Start Delimiter
-- Control Byte
-- Number of Commands
+- 	Start Delimiter
+- 	Control Byte
+- 	Number of Commands
 - *Command*
-- Command Type
-- Command Length
-- Command Payload
+- 	Command Type
+- 	Command Length
+- 	Command Payload
 
