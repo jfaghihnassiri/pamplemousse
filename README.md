@@ -15,3 +15,14 @@ An experiment in socket communication, multi-platform development, and real-time
 - git commit -m 'your commit message'
 - git push
 - git pull
+
+**Communication Protocol**
+- *Header*
+- Start Delimiter
+- Control Byte
+- Number of Commands
+- *Command*
+- Command Type
+- Command Length
+- Command Payload
+
