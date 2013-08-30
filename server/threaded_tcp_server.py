@@ -3,6 +3,7 @@ import thread
 import sys
 
 # -- variables --
+# is this the maximum size of allowed characters in a single message?
 BUFF = 1024
 # named messaging
 users = [];
@@ -11,6 +12,9 @@ def response(key):
 	return 'Server response: ' + key
 
 def handler(clientsock,addr):
+	# send a connection confirmation message to the new client
+	# not working-> clientsock.send(response('Hello from python land!'))
+	# keep connection open and listen for an implicit or explicit close command
 	while 1:
 		data = clientsock.recv(BUFF)
 		if not data: break
@@ -28,7 +32,7 @@ if __name__=='__main__':
 		print "usage :python threaded_tcp_server.py <PORT_NUM>"
 		sys.exit(0)
 		
-	PORT = int(sys.argv[1])
+	PORT = int(sys.argv[1]) #command line port argument
 	HOST = '0.0.0.0' # accept all IPs
 	ADDR = (HOST, PORT)
 	serversock = socket(AF_INET, SOCK_STREAM)
