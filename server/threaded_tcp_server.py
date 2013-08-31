@@ -9,17 +9,18 @@ BUFF = 1024
 users = [];
 
 def response(key):
-	return 'Server response: ' + key
+	return buffer('Server response: ' + key + '\0')
 
 def handler(clientsock,addr):
 	# send a connection confirmation message to the new client
-	# not working-> clientsock.send(response('Hello from python land!'))
+	#clientsock.send(response('Hello from python land!'))
 	# keep connection open and listen for an implicit or explicit close command
 	while 1:
 		data = clientsock.recv(BUFF)
 		if not data: break
 		print repr(addr) + ' recv:' + repr(data)
 		clientsock.send(response(data))
+		clientsock.send(response("End"))
 		print repr(addr) + ' sent:' + repr(response(data))
 		if "close" == data.rstrip(): break # type 'close' on client console to close connection from the server side
     
