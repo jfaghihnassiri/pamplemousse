@@ -15,13 +15,12 @@ public class Pamplemousse {
         try {
     		//Creating a SocketClient object
         	System.out.println("Pre-constructor");
-        	ClientCommunicator client = new ClientCommunicator ("localhost",port);
+        	ClientCommunicator client = new ClientCommunicator ("192.168.1.102",port);
         	System.out.println("Pre-constructor");
         	//Continuously take in user input, send it to the server, and print the response
             boolean connected = true;
             while(connected) {
             	byte[] buf = new byte[80];
-            	System.out.print("Message:");
             	System.in.read(buf);
             	client.writeCommand(buf);
             	if("exit"==buf.toString()) {

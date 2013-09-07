@@ -14,7 +14,7 @@ public class ClientCommunicator {
         this.address = InetAddress.getByName(hostname);
         this.port = port;
         this.socket = new DatagramSocket();
-        this.listener = new PersistentListener(this,"the_listener",this.address,this.port);
+        this.listener = new PersistentListener(this,"the_listener",this.socket);
         this.listener.start();
     }
     
