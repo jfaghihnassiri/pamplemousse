@@ -43,6 +43,10 @@ public class PersistentListener extends Thread {
 				// call the adder for the queue
 				System.out.println(new String(buf, Charset.forName("ISO-8859-1")));
 				
+				// echo for now
+				socket.send(packet);
+				
+				
 			}
 			catch (IOException e) {
 				e.printStackTrace();

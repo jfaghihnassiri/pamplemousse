@@ -3,13 +3,18 @@ package server;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.util.ArrayList;
 
 public class MultiServer {
 
-	private static final int SERVER_PORT = 9010;
+	private static final int SERVER_PORT = 10010;
 	private static final int MAX_PKT_SIZE = 2048;
-	private static int clientID = 1;
+	private static final int MAX_NUM_USERS = 128;
+	
 	private static DatagramSocket serverSocket;
+	
+	private static ArrayList<User> userList = new ArrayList<User>(MAX_NUM_USERS);
+	
 
 	public static void main(String[] args) throws IOException
 	{
@@ -23,18 +28,17 @@ public class MultiServer {
 		serverSocket = new DatagramSocket(SERVER_PORT);
 		
 		while (true){
-			//try{
+			try{
 				DatagramPacket packet =  new DatagramPacket(buffer, buffer.length );
 				serverSocket.receive(packet);
-				System.out.println("SERVER: Accepted connection.");
-				System.out.println("SERVER: received"+new String(packet.getData(), 0, packet.getLength()));
 
-				ClientCommunicator comm = new ClientCommunicator(serverSocket);
-				
+				// spawn processing thread
+				PacketHandler handler = new PacketHandler(packet, userList);
+				handler.start();
 
-			//}catch (Exception e){
-			//	System.err.println("Error in connection attempt.");
-			//}
+			}catch (Exception e){
+				System.err.println("Error in connection attempt.");
+			}
 		}
 	}
 }
