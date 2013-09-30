@@ -1,10 +1,17 @@
 package pong;
 
+import java.awt.Font;
+import java.io.InputStream;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+
+import org.newdawn.slick.Color;
+import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.util.ResourceLoader;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -12,11 +19,13 @@ public class Pong {
 
     private static final int WIDTH = 640;
     private static final int HEIGHT = 480;
+    private static final double SPEED = .6;
     private static boolean isRunning = true;
     private static Ball ball;
     private static Bat batL;
     private static Bat batR;
     private static String direction = "left";
+    private static TrueTypeFont timesFont;
 
     // Main loop
     public static void main(String[] args) {
@@ -24,6 +33,7 @@ public class Pong {
         setUpOpenGL();
         setUpEntities();
         setUpTimer();
+        setUpFont();
         while (isRunning) {
             render();
             logic(getDelta());
@@ -42,17 +52,17 @@ public class Pong {
     private static void input() {
     	// Left paddle
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-            batL.setDY(-.2);
+            batL.setDY(-SPEED/1.5);
         } else if (Keyboard.isKeyDown(Keyboard.KEY_Z)) {
-            batL.setDY(.2);
+            batL.setDY(SPEED/1.5);
         } else {
             batL.setDY(0);
         }
         // Right paddle
         if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
-            batR.setDY(-.2);
+            batR.setDY(-SPEED/1.5);
         } else if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-            batR.setDY(.2);
+            batR.setDY(SPEED/1.5);
         } else {
             batR.setDY(0);
         }
@@ -62,11 +72,13 @@ public class Pong {
             // Set initial ball velocity'
             if(direction == "left") {
             	direction = "right";
-            	ball.setDX(.3);
+            	ball.setDX(SPEED);
+            	ball.setDY(SPEED/4);
             }
             else if(direction == "right") {
             	direction = "left";
-            	ball.setDX(-.3);
+            	ball.setDX(-SPEED);
+            	ball.setDY(SPEED/4);
             }
         }
         // Exit
@@ -81,6 +93,12 @@ public class Pong {
         return (Sys.getTime() * 1000) / Sys.getTimerResolution();
     }
 
+    private static void setUpFont() {
+    	// load a default java font
+    	Font awtFont = new Font("Times New Roman", Font.BOLD, 24);
+    	// TODO timesFont = new TrueTypeFont(awtFont, false);
+    }
+    
     private static int getDelta() {
         long currentTime = getTime();
         int delta = (int) (currentTime - lastFrame);
@@ -114,7 +132,8 @@ public class Pong {
         batR = new Bat(WIDTH-20, HEIGHT / 2 - 40, 10, 80);
         ball = new Ball(WIDTH / 2 - 10 / 2, HEIGHT / 2 - 10 / 2, 10, 10);
         // Set initial ball velocity
-        ball.setDX(-.3);
+        ball.setDX(-SPEED);
+        ball.setDY(SPEED/4);
     }
 
     private static void setUpTimer() {
@@ -126,25 +145,25 @@ public class Pong {
         ball.draw();
         batL.draw();
         batR.draw();
+        //TODO Color.white.bind();
+        //TODO font.drawString(20, 20, "Player 1", Color.yellow );
     }
 
     private static void logic(int delta) {
         ball.update(delta);
         batL.update(delta);
         batR.update(delta);
-        // Left bounce
-        if (ball.getX() <= batL.getX() + batL.getWidth() && ball.getX() >= batL.getX() && ball.getY() >= batL.getY() &&
-                ball.getY() <= batL.getY() + batL.getHeight()) {
+        // Left or right bounce
+        if ((ball.getX() <= batL.getX() + batL.getWidth() && ball.getX() >= batL.getX() && 
+        		ball.getY() >= batL.getY() && ball.getY() <= batL.getY() + batL.getHeight()) 
+        		|| (ball.getX() >= batR.getX() - batR.getWidth() && ball.getX() <= batR.getX() && 
+        		ball.getY() >= batR.getY() && ball.getY() <= batR.getY() + batR.getHeight()) ) {
         	// Set velocity of the ball
-            ball.setDX(0.3);
+            ball.setDX(-ball.getDX());
         }
-        // Right bounce
-        else if (ball.getX() >= batR.getX() - batR.getWidth() && ball.getX() <= batR.getX() && ball.getY() >= batR.getY() &&
-                ball.getY() <= batR.getY() + batR.getHeight()) {
-        	// Set velocity of the ball
-            ball.setDX(-0.3);
+        else if (HEIGHT <= ball.getY()+10 || ball.getY()<= 0) {
+        	ball.setDY(-ball.getDY());
         }
-        
     }
 
     private static class Bat extends AbstractMoveableEntity {
