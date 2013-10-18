@@ -36,8 +36,8 @@ public class Pong {
         setUpFont();
         while (isRunning) {
             render();
-            logic(getDelta());
             input();
+            logic(getDelta());
             Display.update();
             Display.sync(60);
             if (Display.isCloseRequested()) {
@@ -51,9 +51,9 @@ public class Pong {
     // Take input for the bat
     private static void input() {
     	// Left paddle
-        if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
+        if (Keyboard.isKeyDown(Keyboard.KEY_A) ) {
             batL.setDY(-SPEED/1.5);
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_Z)) {
+        } else if (Keyboard.isKeyDown(Keyboard.KEY_Z) ) {
             batL.setDY(SPEED/1.5);
         } else {
             batL.setDY(0);
@@ -145,11 +145,16 @@ public class Pong {
         ball.draw();
         batL.draw();
         batR.draw();
-        //TODO Color.white.bind();
-        //TODO font.drawString(20, 20, "Player 1", Color.yellow );
     }
 
     private static void logic(int delta) {
+        // Keep paddles in bounds
+        if ((batL.getY() <= 0 && batL.getDY() < 0) || ( batL.getY()+batL.getHeight() >= HEIGHT && batL.getDY() >0 ) ) {
+        	batL.setDY(0);
+        }
+        if ((batR.getY() <= 0 && batR.getDY() < 0) || ( batR.getY()+batR.getHeight() >= HEIGHT && batR.getDY() >0 ) ) {
+        	batR.setDY(0);
+        }
         ball.update(delta);
         batL.update(delta);
         batR.update(delta);
