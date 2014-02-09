@@ -8,14 +8,17 @@ public class Pamplemousse {
 	
 	public static void main(String[] args) {
 		System.out.println("Client Started");
+		/*
 		System.out.print("Port:");
 		Scanner in = new Scanner(System.in);
 		int port = in.nextInt();
+		*/
+		int port = 45120;
 		System.out.println("Got port "+port);
         try {
     		//Creating a SocketClient object
         	System.out.println("Pre-constructor");
-        	ClientCommunicator client = new ClientCommunicator ("192.168.1.102",port);
+        	ClientCommunicator client = new ClientCommunicator ("76.102.153.170",port);
         	System.out.println("Pre-constructor");
         	//Continuously take in user input, send it to the server, and print the response
             boolean connected = true;

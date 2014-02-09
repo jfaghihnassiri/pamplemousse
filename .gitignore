@@ -1,0 +1,6 @@
+server/bin/
+client/bin/
+pong/bin/
+server/.classpath
+client/.classpath
+pong/.classpath
